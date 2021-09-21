@@ -35,7 +35,7 @@ jobs:
       - name: Move Logs file and save all relevant files on success
         if: success()
         run: mv scripts/GeneralLogs.log scripts/testing-script-results/ARTIFACTS/ ; exit 0
-	
+
       - name: Save all relevant files
         uses: actions/upload-artifact@v2
         with:
