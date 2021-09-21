@@ -37,6 +37,7 @@ jobs:
         run: mv scripts/GeneralLogs.log scripts/testing-script-results/ARTIFACTS/ ; exit 0
 
       - name: Save all relevant files
+        if: always()
         uses: actions/upload-artifact@v2
         with:
          name: artifact_1
