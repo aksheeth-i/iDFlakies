@@ -28,10 +28,14 @@ jobs:
         
       - name: Test 1st set of projects
         run: bash scripts/test-many-projects.sh scripts/idfProjects1.csv |& tee -a scripts/GeneralLogs.log
+      - name: Move Logs file and save all relevant files on failure
+        if: failure()
+	run: mv scripts/GeneralLogs.log scripts/testing-script-results/ARTIFACTS/ ; exit 1
 
-      - name: Move Logs file into the Artifact folder
-        run: mv scripts/GeneralLogs.log scripts/testing-script-results/ARTIFACTS/
-
+      - name: Move Logs file and save all relevant files on success
+        if: success()
+	run: mv scripts/GeneralLogs.log scripts/testing-script-results/ARTIFACTS/ ; exit 0
+	
       - name: Save all relevant files
         uses: actions/upload-artifact@v2
         with:
