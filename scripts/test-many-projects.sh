@@ -84,11 +84,13 @@ while IFS="," read -r URL SHA MODULE numTests; do
                     let "x = $expectedTests - $numFlakyTests"
                     echo "There were $x less tests found than expected in ${2}. %%%%%"
                     flag=1
+		    echo "DEBUGGING $flag"
                     return 1
                 else
                     let "x = $numFlakyTests - $expectedTests"
                     echo "There were $x more tests found than expected in ${2}. %%%%%"
                     flag=1
+		    echo "DEBUGGING $flag"
                     return 1
                 fi
             fi
@@ -126,7 +128,8 @@ while IFS="," read -r URL SHA MODULE numTests; do
             echo "${URL} idflakies detect not successful. %%%%%"
             flag=1
         else
-           checkFlakyTests ${numTests} ${URL} $(echo ${MODULE} | cut -d'|' -f1)
+            checkFlakyTests ${numTests} ${URL} $(echo ${MODULE} | cut -d'|' -f1)
+	    echo "CHECK2 $flag"
         fi
     fi
     cd ${scriptDir}/testing-script-results
@@ -145,4 +148,5 @@ for d in $(find -name .dtfixingtools); do
 done
 
 
+echo "END $flag"
 exit ${flag}
