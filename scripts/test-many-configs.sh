@@ -291,18 +291,6 @@ while IFS="," read -r URL SHA MODULE testCount1 testCount2 testCount3 testCount4
         checkDetType test1 random-class-method ${MODULE}
 
 
-        setOriginalOrder ${starr[4]} ${MODULE}
-        #Test 2: Most standard test: random-class-method with 8 rounds
-        set -o pipefail ; mvn testrunner:testplugin ${rounds}8 ${ogOrderPass}true ${detType}random-class-method ${PL} &> ${projectDirectory}/test2.log
-        if [[ $? != 0 ]]; then
-            echo "${URL} testrunner was not successful. %%%%%"
-            flag=1
-        fi
-        cleanUp test2 ${MODULE}
-        checkDetType test2 random-class-method ${MODULE}
-        checkNumberRounds test2 8 random-class-method -ge ${MODULE}
-        flakyTestsFound test2 "$testCount2" ${MODULE}
-
 
         setOriginalOrder ${starr[4]} ${MODULE}
         #Test 3: Test originalOrderPass being set to false
@@ -317,54 +305,6 @@ while IFS="," read -r URL SHA MODULE testCount1 testCount2 testCount3 testCount4
 
 
         setOriginalOrder ${starr[4]} ${MODULE}
-        #Test 4: Try random-class determinant type as well as the verifyRounds function
-        set -o pipefail ; mvn testrunner:testplugin ${rounds}12 ${ogOrderPass}true ${detType}random-class ${verRounds}2 ${PL} &> ${projectDirectory}/test4.log
-        if [[ $? != 0 ]]; then
-            echo "${URL} testrunner was not successful. %%%%%"
-            flag=1
-        fi
-        cleanUp test4 ${MODULE}
-        checkDetType test4 random-class ${MODULE}
-        flakyTestsFound test4 "$testCount4" ${MODULE}
-
-
-        setOriginalOrder ${starr[4]} ${MODULE}
-        #Test 5: Try the countFirstFail config
-        set -o pipefail ; mvn testrunner:testplugin ${rounds}8 ${ogOrderPass}true ${detType}random-class-method ${countFirstFail}true ${PL} &> ${projectDirectory}/test5.log
-        if [[ $? != 0 ]]; then
-            echo "${URL} testrunner was not successful. %%%%%"
-            flag=1
-        fi
-        cleanUp test5 ${MODULE}
-        checkNumberRounds test5 8 random-class-method -ge ${MODULE}
-        flakyTestsFound test5 "$testCount5" ${MODULE}
-
-
-        setOriginalOrder ${starr[4]} ${MODULE}
-        #Test 6: Try the reverse determinant type. Make sure only 1 round of tests is ran despite rounds being specified
-        mvn testrunner:testplugin ${rounds}3 ${ogOrderPass}true ${detType}reverse ${PL} &> ${projectDirectory}/test6.log
-        if [[ $? != 0 ]]; then
-            echo "${URL} testrunner was not successful. %%%%%"
-            flag=1
-        fi
-        cleanUp test6 ${MODULE}
-        checkNumberRounds test6 1 reverse -ge ${MODULE}
-        flakyTestsFound test6 "$testCount6" ${MODULE}
-
-
-        setOriginalOrder ${starr[4]} ${MODULE}
-        #Test 7: Try the reverse-class determinant type. Test the priority of configurations by throwing in a timeout as well, which should be ignored
-        set -o pipefail ; mvn testrunner:testplugin ${time}120 ${ogOrderPass}true ${detType}reverse-class ${PL} &> ${projectDirectory}/test7.log
-        if [[ $? != 0 ]]; then
-            echo "${URL} testrunner was not successful. %%%%%"
-            flag=1
-        fi
-        cleanUp test7 ${MODULE}
-        checkNumberRounds test7 1 reverse-class -ge ${MODULE}
-        flakyTestsFound test7 "$testCount7" ${MODULE}
-
-
-        setOriginalOrder ${starr[4]} ${MODULE}
         #Test 8: Try setting semantics to be true, where there should be exactly as many rounds as specified. No more, no less
         set -o pipefail ; mvn testrunner:testplugin ${rounds}12 ${semantics}true ${PL} &> ${projectDirectory}/test8.log
         if [[ $? != 0 ]]; then
@@ -375,14 +315,6 @@ while IFS="," read -r URL SHA MODULE testCount1 testCount2 testCount3 testCount4
         checkNumberRounds test8 12 random -eq ${MODULE}
         flakyTestsFound test8 "$testCount8" ${MODULE}
 
-
-        #Test 9: Make sure we can always output test results to a set directory if necessary via absPath config
-        set -o pipefail ; mvn testrunner:testplugin ${rounds}12 ${absPath}/tmp/pathTest ${PL} &> ${projectDirectory}/test9.log
-        if [[ $? != 0 ]]; then
-            echo "${URL} testrunner was not successful. %%%%%"
-            flag=1
-        fi
-        checkAbsPath /tmp pathTest ${starr[4]} ${MODULE}
 
     fi
     cd ${scriptDir}/MC-script-results
